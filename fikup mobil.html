@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Peminjaman Mobil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        main {
+            margin: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Sistem Peminjaman Mobil</h1>
+    </header>
+    <main>
+        <form id="form-peminjaman">
+            <div class="form-group">
+                <label for="name">Nama Peminjam:</label>
+                <input type="text" id="name" name="name" placeholder="Masukkan nama Anda" required>
+            </div>
+            <div class="form-group">
+                <label for="duration">Lama Meminjam (hari):</label>
+                <input type="number" id="duration" name="duration" placeholder="Masukkan lama peminjaman" min="1" required>
+            </div>
+            <div class="form-group">
+                <label for="date">Tanggal Peminjaman:</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+            <div class="form-group">
+                <label for="return-date">Tanggal Pengembalian:</label>
+                <input type="date" id="return-date" name="return-date" required>
+            </div>
+            <button type="submit" class="button">Pinjam Mobil</button>
+            <!-- Tombol untuk melihat riwayat -->
+            <a href="riwayatmobil.html" id="lihat-riwayat" class="button">Lihat Riwayat Peminjaman</a>
+            <a href="index.html" class="button">Kembali ke Halaman Utama</a>
+        </form>
+    </main>
+
+    <script>
+        // Event listener untuk tombol "Pinjam Mobil"
+        document.getElementById('form-peminjaman').addEventListener('submit', function(e) {
+            e.preventDefault(); // Mencegah refresh halaman
+
+            // Ambil data dari form
+            const namaPeminjam = document.getElementById('name').value;
+            const lamaPinjam = document.getElementById('duration').value;
+            const tanggalPinjam = document.getElementById('date').value;
+            const tanggalKembali = document.getElementById('return-date').value;
+
+            // Validasi data (Opsional)
+            if (new Date(tanggalKembali) < new Date(tanggalPinjam)) {
+                alert('Tanggal pengembalian tidak boleh lebih awal dari tanggal peminjaman.');
+                return;
+            }
+
+            // Buat objek data peminjaman
+            const dataPeminjaman = {
+                namaMobil: "Mobil Default", // Ubah jika ada input pilihan mobil
+                namaPenyewa: namaPeminjam,
+                tanggalPinjam: tanggalPinjam,
+                tanggalKembali: tanggalKembali,
+                status: 'Sedang Dipinjam'
+            };
+
+            // Ambil data dari localStorage (jika ada), jika tidak, buat array kosong
+            let riwayatPeminjaman = JSON.parse(localStorage.getItem('riwayatPeminjaman')) || [];
+
+            // Tambahkan data baru ke array
+            riwayatPeminjaman.push(dataPeminjaman);
+
+            // Simpan kembali data ke localStorage
+            localStorage.setItem('riwayatPeminjaman', JSON.stringify(riwayatPeminjaman));
+
+            // Tampilkan pesan sukses
+            alert('Peminjaman berhasil disimpan!');
+
+            // Arahkan pengguna ke halaman riwayat
+            window.location.href = 'riwayatmobil.html';
+        });
+
+        // Event listener untuk tombol "Lihat Riwayat Peminjaman"
+        document.getElementById('lihat-riwayat').addEventListener('click', function(e) {
+            e.preventDefault(); // Mencegah aksi default
+            window.location.href = 'riwayatmobil.html'; // Redirect ke halaman riwayat
+        });
+    </script>
+</body>
+</html>
